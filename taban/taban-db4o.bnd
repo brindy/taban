@@ -1,0 +1,4 @@
+Bundle-SymbolicName: uk.org.brindy.taban.persistence.db4o
+Bundle-Version: 1.0.0
+Service-Component: uk.org.brindy.taban.db4o.TabanPersistence
+Private-Package: uk.org.brindy.taban.db4o

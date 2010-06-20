@@ -1,0 +1,5 @@
+Service-Component: uk.org.brindy.taban.browser.TabanBrowser
+Bundle-SymbolicName: uk.org.brindy.taban.browser
+Bundle-Version: 1.0.0
+Private-Package: uk.org.brindy.taban.browser
+Include-Resource: web-content=web-content

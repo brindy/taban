@@ -1,0 +1,143 @@
+
+Taban uses a HTTP based REST API and assumes the following mappings to traditional CRUD
+operations and HTTP methods:
+
+PUT - Create or Update by sending the entire document
+GET - Read a document
+DELETE - Delete a document
+POST - reserved for special actions
+
+The HTTP GET method will return a JSON array of child URIs if the URI ends with a trailing slash.  
+This can be limited with the headers 'taban_start' (zero indexed, inclusive) and 'taban_limit'.  For 
+example:
+
+GET /taban/countries/ 
+[
+  "UK",
+  "USA",
+  "Greece",
+  "Italy",
+  "Spain",
+  "Germany",
+  "France",
+  "Holland",
+  "Afghanistan",
+  "Iran",
+  "Iraq"
+]
+
+GET /taban/countries/
+taban_start: 4
+[
+  "Italy",
+  "Spain",
+  "Germany",
+  "France",
+  "Holland",
+  "Afghanistan",
+  "Iran",
+  "Iraq"
+]
+
+GET /taban/countries/
+taban_limit: 3
+[
+  "UK",
+  "USA",
+  "Greece"
+]
+
+GET /taban/countries/
+taban_start: 4
+taban_limit: 2
+[
+  "Spain",
+  "Germany"
+]
+
+If any of the children had children of their own, they would appear multiple times in the results, 
+but ending with a forward slash in order to indicate that there is content available at that 
+location.  For example, this example shows that the UK has content and children, whereas 
+France and UK only has children, the other countries only having content:
+
+GET /taban/countries/ 
+[
+  "UK",
+  "UK/",
+  "USA",
+  "Greece",
+  "Italy",
+  "Spain",
+  "Germany",
+  "France/",
+  "Holland",
+  "Afghanistan",
+  "Iran",
+  "Iraq"
+]
+
+Searching for particular children JSON documents can be achieved with one or more taban_query 
+headers.  For example:
+
+GET /taban/countries/
+taban_query: "population"."size" > "300000000"
+[
+  "USA"
+]
+
+GET /taban/countries/
+taban_query: "population"."size" < "100000000"
+taban_query: "language" = "English"
+[
+  "UK"
+]
+
+Note that query headers are implicitly logical ANDs.  For 'OR' style queries, it is recommended to 
+run multiple queries and merge the results manually.
+
+It is also possible to force the contents of the documents at the URIs returned above to be included in
+the results using the 'include' header.  For instance:
+
+GET /taban/countries/
+taban_query: "language" = "English"
+taban_limit: 3
+taban_include: true
+[
+  "UK" : {
+  	"population" : {
+  		"size": 60943912
+  	},
+  	"language" : "English"
+  },
+  "USA" : {
+  	"population" : {
+  		"size": 304059724
+  	},
+  	"language" : "English"
+  }
+]
+
+When a resource is requested without a trailing slash the HTTP GET method returns the JSON document at that 
+location, if it exists.  For example:
+
+GET /taban/countries/USA
+{
+  "population" : {
+	"size" : 304059724
+  },
+  "language" : "English"
+}
+
+When storing data there are two methods which both use the HTTP PUT method.  
+
+When putting a JSON document in to a URI that ends with a trailing slash, an ID is automatically 
+generated and returned in the 'taban_autoid' header of the HTTP response.  The type of ID
+generated is determined by the ID generator service (see /README.txt).
+
+When putting a JSON document in to a URL without a trailing slash the supplied JSON document 
+replaces any existing content at that location, but will not affect any 'children' that might 
+exist.
+
+In the case of PUT and DELETE it is possible to retrieve the contents previously at those 
+locations by specifying the header "taban_previous: true".
+
