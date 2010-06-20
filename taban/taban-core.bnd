@@ -2,4 +2,4 @@ Bundle-SymbolicName: uk.org.brindy.taban
 Bundle-Version: 1.0.0
 Private-Package: uk.org.brindy.taban.internal
 Export-Package: uk.org.brindy.taban;version=${Bundle-Version}
-Service-Component: uk.org.brindy.taban.internal.Taban
+Service-Component: uk.org.brindy.taban.internal.TabanImpl

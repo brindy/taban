@@ -20,7 +20,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.org.brindy.taban.internal.Taban;
+import uk.org.brindy.taban.internal.TabanImpl;
 import uk.org.brindy.taban.mock.MockHttpService;
 import uk.org.brindy.taban.mock.MockHttpServletRequest;
 import uk.org.brindy.taban.mock.MockHttpServletResponse;
@@ -48,7 +48,7 @@ public class TabanPutHandling {
 	public void putContentIntoDirectory() throws Exception {
 
 		// construct the engine
-		Taban taban = new Taban();
+		TabanImpl taban = new TabanImpl();
 
 		// bind dependencies
 		taban.bind(new MockHttpService());
@@ -128,7 +128,7 @@ public class TabanPutHandling {
 	public void putContent() throws Exception {
 
 		// construct the engine
-		Taban taban = new Taban();
+		TabanImpl taban = new TabanImpl();
 
 		// bind dependencies
 		taban.bind(new MockHttpService());
@@ -208,7 +208,7 @@ public class TabanPutHandling {
 	public void putContentWithExisting() throws Exception {
 
 		// construct the engine
-		Taban taban = new Taban();
+		TabanImpl taban = new TabanImpl();
 
 		// bind dependencies
 		taban.bind(new MockHttpService());
@@ -298,7 +298,7 @@ public class TabanPutHandling {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void execute(Taban taban, MockHttpServletRequest req,
+	private void execute(TabanImpl taban, MockHttpServletRequest req,
 			MockHttpServletResponse resp) throws Exception, ServletException,
 			IOException {
 		Map properties = new HashMap();

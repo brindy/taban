@@ -17,7 +17,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.org.brindy.taban.internal.Taban;
+import uk.org.brindy.taban.internal.TabanImpl;
 import uk.org.brindy.taban.mock.MockHttpService;
 import uk.org.brindy.taban.mock.MockHttpServletRequest;
 import uk.org.brindy.taban.mock.MockHttpServletResponse;
@@ -39,7 +39,7 @@ public class TabanDeleteHandling {
 	public void deleteNoneExistingContent() throws Exception {
 
 		// construct the engine
-		Taban taban = new Taban();
+		TabanImpl taban = new TabanImpl();
 
 		// bind dependencies
 		taban.bind(new MockHttpService());
@@ -80,7 +80,7 @@ public class TabanDeleteHandling {
 	public void deleteWithPrevious() throws Exception {
 
 		// construct the engine
-		Taban taban = new Taban();
+		TabanImpl taban = new TabanImpl();
 
 		// bind dependencies
 		taban.bind(new MockHttpService());
@@ -143,7 +143,7 @@ public class TabanDeleteHandling {
 	public void deleteDirectory() throws Exception {
 
 		// construct the engine
-		Taban taban = new Taban();
+		TabanImpl taban = new TabanImpl();
 
 		// bind dependencies
 		taban.bind(new MockHttpService());
@@ -181,7 +181,7 @@ public class TabanDeleteHandling {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void execute(Taban taban, MockHttpServletRequest req,
+	private void execute(TabanImpl taban, MockHttpServletRequest req,
 			MockHttpServletResponse resp) throws Exception, ServletException,
 			IOException {
 		Map properties = new HashMap();

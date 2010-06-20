@@ -1,8 +1,11 @@
 package uk.org.brindy.taban.browser;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -10,6 +13,8 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.log.LogService;
+
+import uk.org.brindy.taban.Taban;
 
 import aQute.bnd.annotation.component.Activate;
 import aQute.bnd.annotation.component.Component;
@@ -27,6 +32,13 @@ public class TabanBrowser {
 	private LogService log = new NullLogService();
 
 	private String browserAlias;
+
+	private Taban taban;
+
+	@Reference(name = "TABAN")
+	public void bind(Taban taban) {
+		this.taban = taban;
+	}
 
 	@Reference(name = "HTTP")
 	public void bind(HttpService service) {
@@ -47,15 +59,12 @@ public class TabanBrowser {
 	}
 
 	@Activate
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings( { "unchecked", "serial" })
 	public void activate(Map properties) throws Exception {
 		browserAlias = (String) properties.get(PROPERTY_TABAN_BROWSER_ALIAS);
-		final String rootPath = browserAlias.equals("/") ? browserAlias
-				: browserAlias + "/";
 
 		final HttpContext defaultContext = http.createDefaultHttpContext();
-
-		http.registerResources(browserAlias, "/web-content", new HttpContext() {
+		HttpContext context = new HttpContext() {
 			public String getMimeType(String name) {
 				return defaultContext.getMimeType(name);
 			}
@@ -67,21 +76,46 @@ public class TabanBrowser {
 			public boolean handleSecurity(HttpServletRequest request,
 					HttpServletResponse response) throws java.io.IOException {
 
-				log.log(LogService.LOG_DEBUG, "handleSecurity : "
-						+ request.getPathInfo());
+				String path = request.getPathInfo().substring(
+						browserAlias.length());
 
-				if (rootPath.equals(request.getPathInfo())) {
-					response.sendRedirect("index.html");
+				if (0 == path.length() || "/".equals(path)) {
+					if (browserAlias.endsWith("/")) {
+						response.sendRedirect(browserAlias + "index.html");
+					} else {
+						response.sendRedirect(browserAlias + "/index.html");
+					}
 					return false;
 				}
+
 				return defaultContext.handleSecurity(request, response);
 			};
 
-		});
+		};
+
+		http.registerResources(browserAlias, "/web-content", context);
 
 		log
 				.log(LogService.LOG_INFO, "Registered web-content @ "
 						+ browserAlias);
+
+		final String aliasServlet = browserAlias + "/alias";
+		http.registerServlet(aliasServlet, new HttpServlet() {
+
+			@Override
+			protected void doGet(HttpServletRequest req,
+					HttpServletResponse resp) throws ServletException,
+					IOException {
+
+				System.out.println("alias servlet : " + req.getPathInfo());
+
+				resp.setContentType("application/json");
+				resp.getWriter().println(
+						"{ alias : \"" + taban.getAlias() + "\" }");
+			}
+
+		}, null, context);
+
 	}
 
 	@Deactivate

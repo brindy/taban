@@ -29,6 +29,7 @@ import org.osgi.service.log.LogService;
 import uk.org.brindy.taban.Authentication;
 import uk.org.brindy.taban.IDGenerator;
 import uk.org.brindy.taban.Persistence;
+import uk.org.brindy.taban.Taban;
 import uk.org.brindy.taban.TabanEvent;
 import uk.org.brindy.taban.TabanQuery;
 import aQute.bnd.annotation.component.Activate;
@@ -37,9 +38,9 @@ import aQute.bnd.annotation.component.Deactivate;
 import aQute.bnd.annotation.component.Reference;
 
 @SuppressWarnings("serial")
-@Component(immediate = true, properties = { Taban.PROPERTY_TABAN_ALIAS
+@Component(immediate = true, properties = { TabanImpl.PROPERTY_TABAN_ALIAS
 		+ "=/taban" }, name = "uk.org.brindy.Taban")
-public class Taban extends HttpServlet {
+public class TabanImpl extends HttpServlet implements Taban {
 
 	public static final String PROPERTY_TABAN_ALIAS = "taban.alias";
 
@@ -126,6 +127,11 @@ public class Taban extends HttpServlet {
 		http.unregister(tabanAlias);
 
 		log.log(LogService.LOG_INFO, "Unregistered servlet @ " + tabanAlias);
+	}
+
+	@Override
+	public String getAlias() {
+		return tabanAlias;
 	}
 
 	@Override

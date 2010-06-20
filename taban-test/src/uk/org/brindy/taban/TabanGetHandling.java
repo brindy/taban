@@ -23,7 +23,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.org.brindy.taban.internal.Taban;
+import uk.org.brindy.taban.internal.TabanImpl;
 import uk.org.brindy.taban.mock.MockHttpService;
 import uk.org.brindy.taban.mock.MockHttpServletRequest;
 import uk.org.brindy.taban.mock.MockHttpServletResponse;
@@ -44,7 +44,7 @@ public class TabanGetHandling {
 	public void getNoneExistingContentBelowRoot() throws Exception {
 
 		// construct the engine
-		Taban taban = new Taban();
+		TabanImpl taban = new TabanImpl();
 
 		// bind dependencies
 		taban.bind(new MockHttpService());
@@ -85,7 +85,7 @@ public class TabanGetHandling {
 	public void getNoneExistingContentAtRoot() throws Exception {
 
 		// construct the engine
-		Taban taban = new Taban();
+		TabanImpl taban = new TabanImpl();
 
 		// bind dependencies
 		taban.bind(new MockHttpService());
@@ -125,7 +125,7 @@ public class TabanGetHandling {
 	public void getNoneExistingContentAboveRoot() throws Exception {
 
 		// construct the engine
-		Taban taban = new Taban();
+		TabanImpl taban = new TabanImpl();
 
 		// bind dependencies
 		taban.bind(new MockHttpService());
@@ -166,7 +166,7 @@ public class TabanGetHandling {
 	public void getContentAtRoot() throws Exception {
 
 		// construct the engine
-		Taban taban = new Taban();
+		TabanImpl taban = new TabanImpl();
 
 		// bind dependencies
 		taban.bind(new MockHttpService());
@@ -221,7 +221,7 @@ public class TabanGetHandling {
 	public void getDirectory() throws Exception {
 
 		// construct the engine
-		Taban taban = new Taban();
+		TabanImpl taban = new TabanImpl();
 
 		// bind dependencies
 		taban.bind(new MockHttpService());
@@ -277,7 +277,7 @@ public class TabanGetHandling {
 	public void getDirectoryWithStart() throws Exception {
 
 		// construct the engine
-		Taban taban = new Taban();
+		TabanImpl taban = new TabanImpl();
 
 		// bind dependencies
 		taban.bind(new MockHttpService());
@@ -344,7 +344,7 @@ public class TabanGetHandling {
 	public void getDirectoryWithLimit() throws Exception {
 
 		// construct the engine
-		Taban taban = new Taban();
+		TabanImpl taban = new TabanImpl();
 
 		// bind dependencies
 		taban.bind(new MockHttpService());
@@ -411,7 +411,7 @@ public class TabanGetHandling {
 	public void getDirectoryWithQueries() throws Exception {
 
 		// construct the engine
-		Taban taban = new Taban();
+		TabanImpl taban = new TabanImpl();
 
 		// bind dependencies
 		taban.bind(new MockHttpService());
@@ -482,7 +482,7 @@ public class TabanGetHandling {
 	public void getDirectoryWithQueriesStartAndLimit() throws Exception {
 
 		// construct the engine
-		Taban taban = new Taban();
+		TabanImpl taban = new TabanImpl();
 
 		// bind dependencies
 		taban.bind(new MockHttpService());
@@ -564,7 +564,7 @@ public class TabanGetHandling {
 	public void getDirectoryWithContentOnlyIncluded() throws Exception {
 
 		// construct the engine
-		Taban taban = new Taban();
+		TabanImpl taban = new TabanImpl();
 
 		// bind dependencies
 		taban.bind(new MockHttpService());
@@ -648,7 +648,7 @@ public class TabanGetHandling {
 	public void getDirectoryWithContentAndSubFoldersIncluded() throws Exception {
 
 		// construct the engine
-		Taban taban = new Taban();
+		TabanImpl taban = new TabanImpl();
 
 		// bind dependencies
 		taban.bind(new MockHttpService());
@@ -733,7 +733,7 @@ public class TabanGetHandling {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void execute(Taban taban, MockHttpServletRequest req,
+	private void execute(TabanImpl taban, MockHttpServletRequest req,
 			MockHttpServletResponse resp) throws Exception, ServletException,
 			IOException {
 		Map properties = new HashMap();
