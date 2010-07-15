@@ -7,13 +7,12 @@ import java.util.Set;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.JsonNodeFactory;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;
 
 import uk.org.brindy.taban.IDGenerator;
 import uk.org.brindy.taban.Persistence;
 import uk.org.brindy.taban.TabanQuery;
-
+import uk.org.brindy.taban.Util;
 import aQute.bnd.annotation.component.Activate;
 import aQute.bnd.annotation.component.Component;
 import aQute.bnd.annotation.component.Deactivate;
@@ -28,17 +27,17 @@ import com.db4o.query.Predicate;
 @Component
 public class TabanPersistence implements IDGenerator, Persistence {
 
-	private LogService log = new NullLogService();
+	private LogService log = Util.nullLogService;
 
 	private ObjectContainer container;
 
-	@Reference(name="LOG")
+	@Reference(name = "LOG")
 	public void bindOptional(LogService log) {
 		this.log = log;
 	}
 
 	public void unbindOptional(LogService log) {
-		this.log = new NullLogService();
+		this.log = Util.nullLogService;
 	}
 
 	@Activate
@@ -223,27 +222,6 @@ public class TabanPersistence implements IDGenerator, Persistence {
 		}
 
 		return container.query(predicate);
-	}
-
-	private class NullLogService implements LogService {
-
-		@Override
-		public void log(int level, String message) {
-		}
-
-		@Override
-		public void log(int level, String message, Throwable exception) {
-		}
-
-		@Override
-		public void log(ServiceReference sr, int level, String message) {
-		}
-
-		@Override
-		public void log(ServiceReference sr, int level, String message,
-				Throwable exception) {
-		}
-
 	}
 
 }

@@ -9,13 +9,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.log.LogService;
 
 import uk.org.brindy.taban.Taban;
-
+import uk.org.brindy.taban.Util;
 import aQute.bnd.annotation.component.Activate;
 import aQute.bnd.annotation.component.Component;
 import aQute.bnd.annotation.component.Deactivate;
@@ -29,7 +28,7 @@ public class TabanBrowser {
 
 	private HttpService http;
 
-	private LogService log = new NullLogService();
+	private LogService log = Util.nullLogService;
 
 	private String browserAlias;
 
@@ -55,7 +54,7 @@ public class TabanBrowser {
 	}
 
 	public void unbind(LogService service) {
-		this.log = new NullLogService();
+		this.log = Util.nullLogService;
 	}
 
 	@Activate
@@ -94,6 +93,7 @@ public class TabanBrowser {
 		};
 
 		http.registerResources(browserAlias, "/web-content", context);
+		System.out.println("TabanBrowser ready");
 
 		log
 				.log(LogService.LOG_INFO, "Registered web-content @ "
@@ -107,11 +107,10 @@ public class TabanBrowser {
 					HttpServletResponse resp) throws ServletException,
 					IOException {
 
-				System.out.println("alias servlet : " + req.getPathInfo());
-
 				resp.setContentType("application/json");
-				resp.getWriter().println(
-						"{ alias : \"" + taban.getAlias() + "\" }");
+				resp.getWriter().print(
+						"{ \"alias\" : \"" + taban.getAlias() + "\" }");
+				resp.getWriter().flush();
 			}
 
 		}, null, context);
@@ -125,29 +124,5 @@ public class TabanBrowser {
 				+ browserAlias);
 	}
 
-	private class NullLogService implements LogService {
-
-		@Override
-		public void log(int level, String message) {
-
-		}
-
-		@Override
-		public void log(int level, String message, Throwable exception) {
-
-		}
-
-		@Override
-		public void log(ServiceReference sr, int level, String message) {
-
-		}
-
-		@Override
-		public void log(ServiceReference sr, int level, String message,
-				Throwable exception) {
-
-		}
-
-	}
 
 }

@@ -20,7 +20,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.event.EventAdmin;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
@@ -32,6 +31,7 @@ import uk.org.brindy.taban.Persistence;
 import uk.org.brindy.taban.Taban;
 import uk.org.brindy.taban.TabanEvent;
 import uk.org.brindy.taban.TabanQuery;
+import uk.org.brindy.taban.Util;
 import aQute.bnd.annotation.component.Activate;
 import aQute.bnd.annotation.component.Component;
 import aQute.bnd.annotation.component.Deactivate;
@@ -46,7 +46,7 @@ public class TabanImpl extends HttpServlet implements Taban {
 
 	private final ObjectMapper jsonMapper = new ObjectMapper();
 
-	private LogService log = new NullLogService();
+	private LogService log = Util.nullLogService;
 
 	private HttpService http;
 
@@ -84,7 +84,7 @@ public class TabanImpl extends HttpServlet implements Taban {
 	}
 
 	public void unbindOptional(LogService service) {
-		this.log = new NullLogService();
+		this.log = Util.nullLogService;
 	}
 
 	@Reference(name = "HTTP")
@@ -392,26 +392,6 @@ public class TabanImpl extends HttpServlet implements Taban {
 				resp.getWriter());
 		jsonMapper.writeTree(g, node);
 		g.close();
-	}
-
-	private class NullLogService implements LogService {
-
-		@Override
-		public void log(int level, String message) {
-		}
-
-		@Override
-		public void log(int level, String message, Throwable exception) {
-		}
-
-		@Override
-		public void log(ServiceReference sr, int level, String message) {
-		}
-
-		public void log(ServiceReference sr, int level, String message,
-				Throwable exception) {
-		};
-
 	}
 
 }
