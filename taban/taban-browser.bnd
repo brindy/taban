@@ -1,8 +1,0 @@
-Service-Component: uk.org.brindy.taban.browser.TabanBrowser
-Bundle-SymbolicName: uk.org.brindy.taban.browser
-Bundle-Version: 1.0.0
-Private-Package: uk.org.brindy.taban.browser,\
-	uk.org.brindy.taban.browser.view
-Include-Resource: web-content=web-content
-
--output=/Users/brindy/Programs/felix/felix-framework-2.0.1/taban/bundles

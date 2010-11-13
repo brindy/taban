@@ -2,13 +2,13 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="lib" path="/taban-build/dependencies/bundles/com.springsource.org.codehaus.jackson-1.0.0.jar"/>
-	<classpathentry kind="lib" path="/taban-build/dependencies/bundles/com.springsource.org.codehaus.jackson.mapper-1.0.0.jar"/>
 	<classpathentry kind="lib" path="/taban-build/dependencies/libs/osgi-4.2.cmpn.jar"/>
 	<classpathentry kind="lib" path="/taban-build/dependencies/libs/osgi-4.2.core.jar"/>
 	<classpathentry kind="lib" path="/taban-build/dependencies/bundles/db4o-7.12.132.14217-osgi.jar"/>
 	<classpathentry kind="lib" path="/taban-build/dependencies/libs/db4o-7.12.132.14217-all-java1.2.jar"/>
 	<classpathentry kind="lib" path="/taban-build/dependencies/libs/annotation-0.0.384.jar"/>
 	<classpathentry kind="lib" path="/taban-build/dependencies/libs/javax.servlet_2.5.0.v200806031605.jar"/>
+	<classpathentry kind="lib" path="/taban-build/dependencies/bundles/jackson-core-asl-1.5.6.jar"/>
+	<classpathentry kind="lib" path="/taban-build/dependencies/bundles/jackson-mapper-asl-1.5.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

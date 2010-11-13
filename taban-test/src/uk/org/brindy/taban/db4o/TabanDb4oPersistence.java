@@ -13,6 +13,7 @@ import uk.org.brindy.taban.base.PersistenceTests;
 import uk.org.brindy.taban.mock.MockLogService;
 
 import com.db4o.ObjectContainer;
+import com.db4o.ObjectSet;
 
 public class TabanDb4oPersistence extends PersistenceTests {
 
@@ -58,7 +59,14 @@ public class TabanDb4oPersistence extends PersistenceTests {
 		super.basicReadWriteRootDirectory();
 		persistence.deactivate();
 		persistence.activate();
-		assertEquals(4, container.query(JsonNode.class).size());
+
+		ObjectSet results = container.query(JsonNode.class);
+		for (int i = 0; i < results.size(); i++) {
+			Object o = results.get(i);
+			System.out.println(o.getClass().getName() + " = [" + o + "]");
+		}
+
+		assertEquals(4, results.size());
 	}
 
 	@Override

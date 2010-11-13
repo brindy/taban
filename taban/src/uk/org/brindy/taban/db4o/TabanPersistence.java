@@ -7,6 +7,8 @@ import java.util.Set;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.JsonNodeFactory;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.log.LogService;
 
 import uk.org.brindy.taban.IDGenerator;
@@ -23,6 +25,8 @@ import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
 import com.db4o.config.EmbeddedConfiguration;
 import com.db4o.query.Predicate;
+import com.db4o.reflect.jdk.JdkLoader;
+import com.db4o.reflect.jdk.JdkReflector;
 
 @Component
 public class TabanPersistence implements IDGenerator, Persistence {
@@ -31,7 +35,7 @@ public class TabanPersistence implements IDGenerator, Persistence {
 
 	private ObjectContainer container;
 
-	@Reference(name = "LOG")
+	@Reference(name = "LOG", optional = true)
 	public void bindOptional(LogService log) {
 		this.log = log;
 	}
@@ -129,8 +133,8 @@ public class TabanPersistence implements IDGenerator, Persistence {
 
 	@Override
 	public JsonNode read(String location, TabanQuery... queries) {
-		log.log(LogService.LOG_DEBUG, "read(" + location + ","
-				+ Arrays.asList(queries) + ")");
+		log.log(LogService.LOG_DEBUG,
+				"read(" + location + "," + Arrays.asList(queries) + ")");
 		return read(location, 0, -1, queries);
 	}
 
@@ -150,12 +154,15 @@ public class TabanPersistence implements IDGenerator, Persistence {
 
 		JsonNode previousNode = read(location);
 
-		delete(location);
+		// no point deleting unless there's something to delete
+		if (null != previousNode) {
+			delete(location);
+		}
 
 		JsonStorage storage = new JsonStorage(location, node);
 
-		log.log(LogService.LOG_DEBUG, "write : " + storage.getParent() + " : "
-				+ storage.getLocation());
+		log.log(LogService.LOG_DEBUG, "*write : " + storage.getParent() + " : "
+				+ storage.getLocation() + " : " + node);
 
 		container.store(storage);
 		container.commit();
@@ -186,6 +193,13 @@ public class TabanPersistence implements IDGenerator, Persistence {
 
 	protected ObjectContainer openContainer() {
 		EmbeddedConfiguration config = Db4oEmbedded.newConfiguration();
+		config.common().reflectWith(
+				new JdkReflector(getClass().getClassLoader()));
+
+		// config.common().reflectWith(
+		// new JdkReflector(new OSGiLoader(FrameworkUtil
+		// .getBundle(getClass()), new ClassLoaderJdkLoader(
+		// getClass().getClassLoader()))));
 
 		config.common().objectClass(JsonStorage.class).cascadeOnDelete(true);
 
@@ -224,4 +238,32 @@ public class TabanPersistence implements IDGenerator, Persistence {
 		return container.query(predicate);
 	}
 
+	class OSGiLoader implements JdkLoader {
+
+		private final Bundle _bundle;
+		private JdkLoader _loader;
+
+		public OSGiLoader(Bundle bundle, JdkLoader loader) {
+			_bundle = bundle;
+			_loader = loader;
+		}
+
+		public Class loadClass(String className) {
+			Class clazz = _loader.loadClass(className);
+			if (clazz != null) {
+				return clazz;
+			}
+			try {
+				return _bundle.loadClass(className);
+			} catch (ClassNotFoundException exc) {
+				return null;
+			}
+		}
+
+		public Object deepClone(Object context) {
+			return new OSGiLoader(_bundle,
+					(JdkLoader) _loader.deepClone(context));
+		}
+
+	}
 }

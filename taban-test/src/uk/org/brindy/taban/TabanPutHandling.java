@@ -117,7 +117,7 @@ public class TabanPutHandling {
 		// execute test case
 		execute(taban, req, resp);
 
-		assertEquals(null, lastErrorCode);
+		assertNull(lastErrorCode);
 		assertNotNull(lastNode);
 		assertEquals(lastNode.get("x").getIntValue(), 1);
 		assertEquals(headers.get("taban_autoid"), "424709482");
@@ -197,10 +197,10 @@ public class TabanPutHandling {
 		execute(taban, req, resp);
 
 		assertNull(lastOutputStream);
-		assertEquals(null, lastErrorCode);
+		assertNull(lastErrorCode);
 		assertNotNull(lastNode);
 		assertEquals(lastNode.get("x").getIntValue(), 1);
-		assertEquals(headers.get("taban_autoid"), null);
+		assertNull(headers.get("taban_autoid"));
 		assertEquals("/countries", lastLocation);
 	}
 

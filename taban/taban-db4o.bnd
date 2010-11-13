@@ -2,3 +2,11 @@ Bundle-SymbolicName: uk.org.brindy.taban.persistence.db4o
 Bundle-Version: 1.0.0
 Service-Component: uk.org.brindy.taban.db4o.TabanPersistence
 Private-Package: uk.org.brindy.taban.db4o
+
+Bundle-ClassPath: ., lib/db4o.jar
+Include-Resource: lib/db4o.jar=../taban-build/dependencies/libs/db4o-7.12.132.14217-all-java1.2.jar
+Import-Package: !org.apache.tools.ant,\
+	!org.apache.tools.ant.types,\
+	!org.apache.tools.ant.types.resources,\
+	!org.apache.tools.ant.util.regexp,\
+	*

@@ -74,8 +74,12 @@ public abstract class PersistenceTests {
 		assertEquals("xyz", array.get(0).getTextValue());
 
 		oNode = new ObjectNode(JsonNodeFactory.instance);
-		oNode.put("x", 1);
+		oNode.put("x", 2);
 		assertNull(persistence.write("/fgh/abc", oNode));
+		
+		node = persistence.read("/fgh/abc");
+		assertNotNull(node);
+		assertEquals(2, node.get("x").getIntValue());
 
 		node = persistence.read("/");
 		assertNotNull(node);

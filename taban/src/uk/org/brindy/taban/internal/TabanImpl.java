@@ -102,10 +102,9 @@ public class TabanImpl extends HttpServlet implements Taban {
 		this.idGeneration = service;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Activate
-	public void activate(Map properties) throws Exception {
-		tabanAlias = (String) properties.get(PROPERTY_TABAN_ALIAS);
+	public void activate(Map<String, String> properties) throws Exception {
+		tabanAlias = properties.get(PROPERTY_TABAN_ALIAS);
 		if (null == tabanAlias || !tabanAlias.startsWith("/")
 				|| tabanAlias.endsWith("/")) {
 			throw new RuntimeException(
@@ -115,23 +114,30 @@ public class TabanImpl extends HttpServlet implements Taban {
 		// actual activation
 		try {
 			http.registerServlet(tabanAlias, this, null, createHttpContext());
+			System.out.println("Registered servlet @ " + tabanAlias);
 			log.log(LogService.LOG_INFO, "Registered servlet @ " + tabanAlias);
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to register servlet alias", e);
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Deactivate
-	public void deactivate(Map properties) throws Exception {
+	public void deactivate(Map<String, String> properties) throws Exception {
 		http.unregister(tabanAlias);
-
 		log.log(LogService.LOG_INFO, "Unregistered servlet @ " + tabanAlias);
 	}
 
 	@Override
 	public String getAlias() {
 		return tabanAlias;
+	}
+
+	private String getHeaderOrParam(HttpServletRequest req, String name) {
+		String value = req.getHeader(name);
+		if (null == value) {
+			value = req.getParameter(name);
+		}
+		return value;
 	}
 
 	@Override
@@ -144,6 +150,7 @@ public class TabanImpl extends HttpServlet implements Taban {
 			return;
 		}
 		log.log(LogService.LOG_INFO, "GET " + location);
+		System.out.println("GET " + location);
 
 		TabanQuery[] queries = extractQueriesFromHeaders(req, resp);
 		if (null == queries) {
@@ -152,9 +159,11 @@ public class TabanImpl extends HttpServlet implements Taban {
 			return;
 		}
 
-		String includeHeader = req.getHeader("taban_include");
-		String startHeader = req.getHeader("taban_start");
-		String limitHeader = req.getHeader("taban_limit");
+		String includeHeader = getHeaderOrParam(req, "taban_include");
+		String startHeader = getHeaderOrParam(req, "taban_start");
+		String limitHeader = getHeaderOrParam(req, "taban_limit");
+		System.out.println("include = " + includeHeader + ", start = "
+				+ startHeader + ", limitHeader = " + limitHeader);
 		JsonNode node = null;
 		if (location.endsWith("/")
 				&& (null != startHeader || null != limitHeader || null != includeHeader)) {
@@ -199,8 +208,8 @@ public class TabanImpl extends HttpServlet implements Taban {
 					if (!valueAtIndex.endsWith("/")) {
 						ObjectNode value = new ObjectNode(
 								JsonNodeFactory.instance);
-						value.put(valueAtIndex, persistence.read(location
-								+ valueAtIndex));
+						value.put(valueAtIndex,
+								persistence.read(location + valueAtIndex));
 						array.set(i, value);
 					}
 
@@ -243,6 +252,7 @@ public class TabanImpl extends HttpServlet implements Taban {
 		JsonParser parser = jsonMapper.getJsonFactory().createJsonParser(
 				req.getInputStream());
 		JsonNode node = parser.readValueAsTree();
+		System.out.println("PUT " + location + " : " + node);
 
 		if (location.endsWith("/")) {
 			String id = idGeneration.generateID(location);
@@ -269,9 +279,7 @@ public class TabanImpl extends HttpServlet implements Taban {
 
 		String location = extractResourceLocation(req);
 		if (null == location) {
-			log
-					.log(LogService.LOG_INFO,
-							"Bad DELETE request, invalid location");
+			log.log(LogService.LOG_INFO, "Bad DELETE request, invalid location");
 			resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
